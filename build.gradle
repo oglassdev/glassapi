@@ -40,17 +40,14 @@ compileTestKotlin {
 application {
     mainClass = "net.hotslicer.rpg.HotslicerRPG"
 }
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'me.oglass'
-            artifactId = 'glassapi'
-            version = "0.1-SNAPSHOT"
             from components.java
-
-            pom {
-                description = 'Glass'
-            }
         }
     }
 }
