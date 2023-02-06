@@ -28,7 +28,7 @@ shadowJar {
     dependencies {
         exclude "org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT"
     }
-    relocate 'de.tr7zw.changeme.nbtapi', 'me.oglass'
+    relocate 'de.tr7zw.changeme.nbtapi', 'me.oglass.glassapi.nbtapi'
 }
 
 test {
@@ -46,6 +46,9 @@ application {
 java {
     withSourcesJar()
     withJavadocJar()
+}
+shadowJar {
+    archiveName = "$baseName-$version.$extension"
 }
 publishing {
     publications {
