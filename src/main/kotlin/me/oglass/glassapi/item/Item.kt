@@ -5,7 +5,6 @@ import de.tr7zw.changeme.nbtapi.NBTItem
 import me.oglass.glassapi.GlassAPI
 import me.oglass.glassapi.modifier.Modifier
 import org.bukkit.Material
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -15,6 +14,7 @@ abstract class Item(plugin: JavaPlugin) {
     abstract fun getID(): String
     abstract fun getDescription(): Array<String>?
     abstract fun getDefaultModifiers(): HashMap<Modifier,Double>?
+    abstract fun getAbilities(): Array<Ability>
     fun getItem(): ItemStack {
         val item = ItemStack(getMaterial())
         NBT.modify(item, fun(rwnbt) {
@@ -24,6 +24,4 @@ abstract class Item(plugin: JavaPlugin) {
         })
         return item
     }
-    fun onLeftClick(event: PlayerInteractEvent) {}
-    fun onRightClick(event: PlayerInteractEvent) {}
 }

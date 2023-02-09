@@ -10,7 +10,7 @@ fun ModifiedItem(item: Item): ModifiedItem {
     return ModifiedItem(item.getItem())
 }
 class ModifiedItem constructor(private val item: ItemStack) {
-    private val baseItem: Item
+    val baseItem: Item
     private val modifiers = HashMap<Modifier,Double>()
     init {
         val data = NBTItem(item).getCompound(GlassAPI.getItemDataName())

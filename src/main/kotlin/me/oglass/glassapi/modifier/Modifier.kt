@@ -18,9 +18,13 @@ abstract class Modifier(plugin: JavaPlugin) {
         fun registerModifier(modifier: Modifier) {
             modifiers[modifier.javaClass.typeName] = modifier
         }
+        fun getModifiers(): Collection<Modifier> {
+            return modifiers.values
+        }
     }
     abstract fun getName(): String
     abstract fun getType(): ModifierType
+    abstract fun getModifiedModifiers(level: Double): HashMap<Modifier,Double>
 }
 enum class ModifierType {
     ENCHANT,STAT,CUSTOM
