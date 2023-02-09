@@ -4,10 +4,10 @@ import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.*
 import org.bson.Document
-import org.bson.conversions.Bson
 import java.util.*
+import kotlin.collections.ArrayList
 
-class MongoConnection(connectionStr: String, val prefix: String) {
+class MongoConnection(connectionStr: String) : Database<MongoCollection<Document>,Document> {
     private val client: MongoClient
     private val database: MongoDatabase
     init {
@@ -18,36 +18,59 @@ class MongoConnection(connectionStr: String, val prefix: String) {
         client = MongoClients.create(settings)
         database = client.getDatabase(Objects.requireNonNull(connectionString.database))
     }
-    private fun getCollection(name: String): CollectionWrapper {
-        return CollectionWrapper(database.getCollection(name))
+    override fun getCollection(name: String): DatabaseCollection<MongoCollection<Document>,Document> {
+        return MongoDBCollection(database.getCollection(name))
     }
-    fun closeConnection() {
-        client.close() // A C D A - MULTIPLE CHOICE
+    override fun closeConnection() {
+        client.close()
     }
 }
-class CollectionWrapper(private val collection: MongoCollection<Document>) {
-    fun containsValue(id: String): Boolean {
+class MongoDBCollection(private val collection: MongoCollection<Document>) : DatabaseCollection<MongoCollection<Document>,Document> {
+    override fun containsValue(id: String): Boolean {
         val iterable = collection
             .find(Document("_id", id))
         return iterable.first() != null
     }
-    fun getFirstDocument(id: String): Document? {
+    override fun getFirstDocument(id: String): DatabaseDocument<Document> {
         return getFirstDocument("_id", id)
     }
-    fun getFirstDocument(key: String, value: Any?): Document? {
+    override fun getFirstDocument(key: String, value: Any?): DatabaseDocument<Document> {
         return getDocuments(key, value).first()
     }
-    fun getDocuments(key: String, value: Any?): FindIterable<Document?> {
-        return collection.find(Document(key, value))
+
+    override fun getDocuments(): Array<DatabaseDocument<Document>> {
+        val i = collection.find().iterator()
+        val list = ArrayList<DatabaseDocument<Document>>()
+        while (i.hasNext()) {
+            list.add(MongoDBDocument(i.next()))
+        }
+        return list.toArray(arrayOf())
     }
-    fun deleteDocument(id: String) {
+
+    override fun getDocuments(key: String, value: Any?): Array<DatabaseDocument<Document>> {
+        val i = collection.find(Document(key,value)).iterator()
+        val list = ArrayList<DatabaseDocument<Document>>()
+        while (i.hasNext()) {
+            list.add(MongoDBDocument(i.next()))
+        }
+        return list.toArray(arrayOf())
+    }
+    override fun deleteDocument(id: String) {
         if (!containsValue(id)) return
         collection.deleteOne(Document("_id", id))
     }
-    fun deleteDocuments(filter: Bson) {
-        collection.deleteMany(filter)
-    }
-    fun getCollection(): MongoCollection<Document> {
+    override fun getCollection(): MongoCollection<Document> {
         return collection
+    }
+}
+class MongoDBDocument(private val document: Document) : DatabaseDocument<Document>() {
+    override fun get(key: String): Any? {
+        return if (document.containsKey(key)) document[key] else null
+    }
+    override fun set(key: String, value: Any) {
+        document[key] = value
+    }
+    override fun getDocument(): Document {
+        return document
     }
 }

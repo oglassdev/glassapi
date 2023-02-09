@@ -1,13 +1,14 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.21'
     id 'application'
+    id 'java-library'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
 }
 
 apply plugin: 'maven-publish'
 
-group = 'net.hotslicer'
+group = 'me.oglass'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -41,7 +42,7 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
 }
 application {
-    mainClass = "net.hotslicer.rpg.HotslicerRPG"
+    mainClass = "me.oglass.glassapi.HotslicerRPG"
 }
 java {
     withSourcesJar()

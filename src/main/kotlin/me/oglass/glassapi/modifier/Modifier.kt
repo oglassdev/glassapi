@@ -1,30 +1,27 @@
 package me.oglass.glassapi.modifier
 
-import org.bukkit.Bukkit
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 
 /**
  * Don't initialize a Modifier more than once.
  * Every time a modifier is initialized, it registers the listeners
  */
-abstract class Modifier(plugin: JavaPlugin) : Listener {
-    init {
-        Bukkit.getPluginManager().registerEvents(this,plugin)
-        object : BukkitRunnable() {
-            override fun run() {
-                onTick(this)
-            }
-        }.runTaskTimer(plugin,1,1)
+abstract class Modifier(plugin: JavaPlugin) {
+    companion object {
+        private var modifiers = HashMap<String,Modifier>()
+        fun <T : Modifier> getModifier(type: Class<T>): T? {
+            return modifiers.getOrDefault(type.typeName,null) as T?
+        }
+        fun getModifier(name: String): Modifier? {
+            return modifiers.getOrDefault(name,null)
+        }
+        fun registerModifier(modifier: Modifier) {
+            modifiers[modifier.javaClass.typeName] = modifier
+        }
     }
+    abstract fun getName(): String
     abstract fun getType(): ModifierType
-    open fun onTick(runnable: BukkitRunnable) {}
-    @EventHandler
-    open fun onInteract(interaction: PlayerInteractEvent) {}
 }
 enum class ModifierType {
-    ENCHANT,STAT
+    ENCHANT,STAT,CUSTOM
 }
