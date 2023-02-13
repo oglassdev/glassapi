@@ -2,6 +2,8 @@ package me.oglass.glassapi
 
 import me.oglass.glassapi.format.ChatFormatter
 import me.oglass.glassapi.format.ItemFormatter
+import me.oglass.glassapi.modifier.Health
+import me.oglass.glassapi.modifier.Modifier
 import me.oglass.glassapi.player.PlayerHandler
 import org.bukkit.plugin.java.JavaPlugin
 

@@ -7,24 +7,16 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 class EntityDamagedByPlayerEvent
-    (private val player: Player, private val entity: BukkitLivingEntity,
-     private val damageType: DamageType) : Event(), Cancellable {
+    (val player: Player, val entity: BukkitLivingEntity,
+     val damageType: DamageType) : Event(), Cancellable {
     companion object {
         private val handlers = HandlerList()
+        @JvmStatic
         fun getHandlerList(): HandlerList {
             return handlers
         }
     }
     private var cancelled = false;
-    fun getPlayer(): Player {
-        return player
-    }
-    fun getEntity(): BukkitLivingEntity {
-        return entity
-    }
-    fun getDamageType(): DamageType {
-        return damageType
-    }
     override fun isCancelled(): Boolean {
         return cancelled
     }
