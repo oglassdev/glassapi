@@ -5,14 +5,18 @@ import me.oglass.glassapi.modifier.Modifier
 import me.oglass.glassapi.modifier.ModifierType
 
 class ItemFormatter {
-    fun getDisplayName(item: ModifiedItem): String {
+    fun formatName(item: ModifiedItem): String {
         return item.baseItem.getName()
     }
-    fun getLore(item: ModifiedItem): List<String> {
+    fun formatLore(item: ModifiedItem): List<String> {
         val list = arrayListOf<String>()
         for (modifier in Modifier.getModifiers()) {
             if (modifier.getType() == ModifierType.STAT)
                 list.add("${modifier.getName()}: ${item.getTotalModifier(modifier)}")
+        }
+        if (item.baseItem.getDescription() != null) {
+            list.add("")
+            list.addAll(item.baseItem.getDescription()!!)
         }
         return list
     }

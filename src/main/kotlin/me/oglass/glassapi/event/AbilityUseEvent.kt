@@ -1,21 +1,23 @@
 package me.oglass.glassapi.event
 
+import me.oglass.glassapi.item.Ability
+import me.oglass.glassapi.item.ModifiedItem
+import me.oglass.glassapi.player.PlayerWrapper
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class AbilityUseEvent(private val player: Player) : Event(),Cancellable {
+class AbilityUseEvent(val player: PlayerWrapper,val ability: Ability,
+                      val item: ModifiedItem?) : Event(),Cancellable {
     companion object {
         private val handlers = HandlerList()
+        @JvmStatic
         fun getHandlerList(): HandlerList {
             return handlers
         }
     }
-    private var cancelled = false;
-    fun getPlayer(): Player {
-        return player
-    }
+    private var cancelled = false
     override fun isCancelled(): Boolean {
         return cancelled
     }

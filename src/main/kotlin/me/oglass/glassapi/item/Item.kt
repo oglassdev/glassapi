@@ -15,13 +15,15 @@ abstract class Item(plugin: JavaPlugin) {
     abstract fun getDescription(): Array<String>?
     abstract fun getDefaultModifiers(): HashMap<Modifier,Double>?
     abstract fun getAbilities(): Array<Ability>
-    fun getItem(): ItemStack {
+    fun createItem(): ModifiedItem {
         val item = ItemStack(getMaterial())
         NBT.modify(item, fun(rwnbt) {
             val nbti: NBTItem = rwnbt as NBTItem
             val compound = nbti.getOrCreateCompound(GlassAPI.getItemDataName())
             compound.setString("ID",getID())
         })
-        return item
+        val modItem = ModifiedItem(item)
+        modItem.updateItem()
+        return modItem
     }
 }
